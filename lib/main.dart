@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/link.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,9 +26,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Start Page'),
     );
   }
 }
@@ -93,22 +97,50 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'Kicker finder',
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.red,
+                fontFamily: 'BalsamiqSans'
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            const Text(
+              'Описание будущего функционала: \n 1) профиль игрока (аватар, никнейм, подробности о игроке) и его статистика (побед/поражений) \n 2) быстрая игра (1 на 1, 2 на 2) \n '
+                  '3) генерация турнирной сетки и запуск турнира в зависимости от количества игроков' ,
+              style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontFamily: 'BalsamiqSans'
+              ),
+            ),
+            Container(
+                child: Link(
+                  target: LinkTarget.self,
+                  uri: Uri.parse('https://github.com/warfka/kicker_finder'),
+                  builder: (context, followLink) => GestureDetector(
+                    onTap: followLink,
+                    child: Text(
+                      'https://github.com/warfka/kicker_finder',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.red,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
             ),
           ],
         ),
+
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.account_circle_rounded),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
