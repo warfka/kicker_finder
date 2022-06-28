@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
+//import 'package:json_serializable/json_serializable.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.red,
       ),
+      debugShowCheckedModeBanner: false,
       home: const StartPage(title: 'Start Page'),
     );
   }
@@ -51,8 +54,9 @@ class StartPage extends StatefulWidget {
   @override
   State<StartPage> createState() => _StartPageState();
 }
+
 //---------------------
-class HomePage extends StatefulWidget{
+class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
@@ -60,7 +64,7 @@ class HomePage extends StatefulWidget{
   State<HomePage> createState() => _HomePageState();
 }
 
-class BattlePage extends StatefulWidget{
+class BattlePage extends StatefulWidget {
   const BattlePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
@@ -68,7 +72,7 @@ class BattlePage extends StatefulWidget{
   State<BattlePage> createState() => _BattlePageState();
 }
 
-class TournamentPage extends StatefulWidget{
+class TournamentPage extends StatefulWidget {
   const TournamentPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
@@ -76,7 +80,7 @@ class TournamentPage extends StatefulWidget{
   State<TournamentPage> createState() => _TournamentPageState();
 }
 
-class KickerMapPage extends StatefulWidget{
+class KickerMapPage extends StatefulWidget {
   const KickerMapPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
@@ -84,16 +88,17 @@ class KickerMapPage extends StatefulWidget{
   State<KickerMapPage> createState() => _KickerMapPageState();
 }
 
-class PlayerProfilePage extends StatefulWidget{
-  const PlayerProfilePage({Key? key, required this.title}) : super(key: key);
+class PlayerProfilePage extends StatefulWidget {
+  const PlayerProfilePage({Key? key, required this.title, required this.topPlayers})
+      : super(key: key);
   final String title;
+  final List<TopPlayer> topPlayers;
 
   @override
   State<PlayerProfilePage> createState() => _PlayerProfilePageState();
 }
 
 class _StartPageState extends State<StartPage> {
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -130,27 +135,19 @@ class _StartPageState extends State<StartPage> {
           children: <Widget>[
             const Text(
               'Kicker finder',
-              style: TextStyle(
-                fontSize: 25,
-                color: Colors.red,
-                fontFamily: 'BalsamiqSans'
-              ),
+              style: TextStyle(fontSize: 25, color: Colors.red, fontFamily: 'BalsamiqSans'),
             ),
             const Text(
               'Описание будущего функционала: \n 1) профиль игрока (аватар, никнейм, подробности о игроке) и его статистика (побед/поражений) \n 2) быстрая игра (1 на 1, 2 на 2) \n '
-                  '3) генерация турнирной сетки и запуск турнира в зависимости от количества игроков' ,
-              style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.black,
-                  fontFamily: 'BalsamiqSans'
-              ),
+              '3) генерация турнирной сетки и запуск турнира в зависимости от количества игроков',
+              style: TextStyle(fontSize: 15, color: Colors.black, fontFamily: 'BalsamiqSans'),
             ),
             TextButton(
-                onPressed: () async{
-                  final Uri url = Uri.parse('https://github.com/warfka/kicker_finder');
-                  if (!await launchUrl(url)) throw 'Could not launch $url';
-                },
-              child: Text(
+              onPressed: () async {
+                final Uri url = Uri.parse('https://github.com/warfka/kicker_finder');
+                if (!await launchUrl(url)) throw 'Could not launch $url';
+              },
+              child: const Text(
                 'https://github.com/warfka/kicker_finder',
                 style: TextStyle(
                   fontSize: 20,
@@ -160,12 +157,13 @@ class _StartPageState extends State<StartPage> {
               ),
             ),
             RawMaterialButton(
-                onPressed: () {
-                  //final String title;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(title: 'Home Page')));
-                },
+              onPressed: () {
+                //final String title;
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => HomePage(title: 'Home Page')));
+              },
               fillColor: Colors.red[400],
-              child: Text('Нажмите чтобы начать'),
+              child: const Text('Нажмите чтобы начать'),
             ),
           ],
         ),
@@ -174,10 +172,7 @@ class _StartPageState extends State<StartPage> {
   }
 }
 
-
-
-class _HomePageState extends State<HomePage>{
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -210,138 +205,313 @@ class _HomePageState extends State<HomePage>{
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            OutlinedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => BattlePage(title: 'Batle Page')));
-                },
-                child: Text('1x1'),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      color: Colors.red,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BattlePage(title: 'Batle Page')));
+                        },
+                        child: const Text(
+                          '1x1',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      color: Colors.red,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TournamentPage(title: 'Tournament Page')));
+                        },
+                        child: const Text(
+                          'Турнир',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TournamentPage(title: 'Tournament Page')));
-              },
-              child: Text('Турнир'),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => KickerMapPage(title: 'Kicker Map Page')));
-              },
-              child: Text('Карта площадок'),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerProfilePage(title: 'Player Profile Page')));
-              },
-              child: Text('Профиль'),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      color: Colors.red,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => KickerMapPage(title: 'Kicker Map Page')));
+                        },
+                        child: const Text(
+                          'Карта площадок',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      color: Colors.red,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PlayerProfilePage(
+                                        title: 'Player Profile Page',
+                                        topPlayers: List.generate(
+                                            50,
+                                            (index) =>
+                                                TopPlayer('Player $index', 'I am $index goodbye')),
+                                      )));
+                        },
+                        child: const Text(
+                          'Профиль',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
+        onPressed: () {},
         tooltip: 'Setings',
-        child: const Icon(Icons.adb),
+        child: const Icon(Icons.settings),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
 
-class _BattlePageState extends State<BattlePage>{
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-          ],
-        ),
-      ),
-    );
+class _BattlePageState extends State<BattlePage> {
+  void getHttp() async {
+    try {
+      var response = await Dio().get('http://www.google.com');
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
-}
-
-class _TournamentPageState extends State<TournamentPage>{
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
-      body: Center(
-
+      body: Container(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _KickerMapPageState extends State<KickerMapPage>{
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-
-        title: Text(widget.title),
-      ),
-      body: Center(
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PlayerProfilePageState extends State<PlayerProfilePage>{
-
-  List<String> _arrayPlayerProfiles = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-
-        title: Text(widget.title),
-      ),
-      body: Center(
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Image.network(
-                "https://www.images.lesyadraw.ru/2014/07/kak_narisovat_aang_avatar0.jpg"
-            ),
-            Text(
-              'Любитель Кикера' ,
-              style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
-                  fontFamily: 'BalsamiqSans'
+            ElevatedButton(
+                onPressed: () {
+                  getHttp();
+                },
+                child: const Text('get')),
+            Container(
+              child: Row(
+                children: [],
               ),
             ),
-            new ListView.builder( //ToDo Best players list
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TournamentPageState extends State<TournamentPage> {
+/*
+  Future<List<String>> getFutureTournaments() async{
+    await Future.delayed(
+      Duration(seconds: 3),
+    );
+    return ["Летний турнир","Зимний турнир","Межсезонье", "Экстра турнир"];
+  }*/
+
+  final Future<String> getFutureTournaments = Future<String>.delayed(
+    const Duration(seconds: 3),
+    () => 'Летний турнир, Экстра турнир',
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: FutureBuilder<String>(
+          future: getFutureTournaments,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            return snapshot.connectionState == ConnectionState.waiting
+                ? CircularProgressIndicator()
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Турниры: ${snapshot.data}'),
+                  );
+          },
+        ),
+      ),
+    );
+  }
+
+/*Column(
+                        children: List.generate(
+                            4,//snapshot.data.length,
+                              (index) => Text(
+                                snapshot.data,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                          ),
+                      ),
+
+   */
+/*
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            FutureBuilder<List<String>>(
+              future: getFutureTournaments(),
+              builder: (context, snapshot) {
+                return snapshot.connectionState == ConnectionState.waiting
+                    ? CircularProgressIndicator()
+                    :Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      List.generate(
+                        snapshot.data.length,
+                            (index) => Text(
+                          snapshot.data[index],
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }*/
+}
+
+class _KickerMapPageState extends State<KickerMapPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[],
+        ),
+      ),
+    );
+  }
+}
+
+class TopPlayer {
+  late String playerNickname;
+  late String playerSlogan;
+
+  TopPlayer(this.playerNickname, this.playerSlogan);
+}
+/*
+class _PlayerProfilePageState extends State<PlayerProfilePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            CircleAvatar(
+              backgroundImage: AssetImage('img/firstPlayer.jpg'),
+              radius: 60,
+            ),
+            const Text(
+              'Любитель Кикера',
+              style: TextStyle(fontSize: 25, color: Colors.black, fontFamily: 'BalsamiqSans'),
+            ),
+            ListView.builder(
+              itemCount: widget.topPlayers.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
               itemBuilder: (context, index) {
-                return new Text('Player $index');
+                return ListTile(
+                  title: Text(widget.topPlayers[index].playerNickname),
+                  onTap: () {},
+                );
               },
             ),
           ],
@@ -349,4 +519,159 @@ class _PlayerProfilePageState extends State<PlayerProfilePage>{
       ),
     );
   }
+}*/
+
+class _PlayerProfilePageState extends State<PlayerProfilePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: 200,
+                color: Colors.white,
+                child: Center(
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('img/firstPlayer.jpg'),
+                    radius: 60,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: 200,
+                color: Colors.white,
+                child: Center(
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.person),
+                      hintText: 'What people call you?',
+                      labelText: 'Your nickname',
+                    ),
+                    onSaved: (String? value) {},
+                    validator: (String? value) {
+                      return (value != null && value.contains('ball'))
+                          ? 'This is a very boring nickname.'
+                          : null;
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                height: 200,
+                color: Colors.white,
+                child: Center(
+                  child: Text('Процент побед: 50 \n Количество игр: 10 \n Количество кубков: 0'),
+                ),
+              ),
+            ),
+            Text('Лучшие игроки'),
+            Expanded(
+              flex: 3,
+              child: ListView.builder(
+                itemCount: widget.topPlayers.length,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(widget.topPlayers[index].playerNickname),
+                    onTap: () {},
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
+/*
+class _PlayerProfilePageState extends State<PlayerProfilePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 200,
+              color: Colors.white,
+              child: Center(
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('img/firstPlayer.jpg'),
+                  radius: 60,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 200,
+              color: Colors.white,
+              child: Center(
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.person),
+                    hintText: 'What people call you?',
+                    labelText: 'Your nickname',
+                  ),
+                  onSaved: (String? value) {
+
+                  },
+                  validator: (String? value) {
+                    return(value != null && value.contains('ball')) ?
+                        'This is a very boring nickname.' : null;
+                  },
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 200,
+              color: Colors.white,
+              child: Center(
+                child: Text(
+                    'Процент побед: 50 \n Количество игр: 10 \n Количество кубков: 0'
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+              child: ListView.builder(
+                itemCount: widget.topPlayers.length,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(widget.topPlayers[index].playerNickname),
+                    onTap: () {},
+                  );
+                },
+              ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+),*/
