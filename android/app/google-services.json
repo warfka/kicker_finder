@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "285105707653",
+    "project_id": "kickerfinder-8e6bc",
+    "storage_bucket": "kickerfinder-8e6bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285105707653:android:a1714ec9a600031a5827ec",
+        "android_client_info": {
+          "package_name": "com.example.kicker_finder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285105707653-3d69841lfcdumujiqedjkfc4qsgnl3it.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrwaH8OEOOSY2risyuGn4VZsqwTTZ4yRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285105707653-3d69841lfcdumujiqedjkfc4qsgnl3it.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
