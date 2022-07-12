@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:kicker_finder/pages/startPage.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -31,68 +33,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: FutureBuilder<String>(
-          future: getFutureTournaments,
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            return snapshot.connectionState == ConnectionState.waiting
-                ? CircularProgressIndicator()
-                : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Турниры: ${snapshot.data}'),
-                  );
-          },
-        ),
-      ),
-    );
-  }*/
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            FutureBuilder<List<String>>(
-              future: getFutureTournaments(),
-              builder: (context, snapshot) {
-                return snapshot.connectionState == ConnectionState.waiting
-                    ? CircularProgressIndicator()
-                    :Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      List.generate(
-                        snapshot.data.length,
-                            (index) => Text(
-                          snapshot.data[index],
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-*/

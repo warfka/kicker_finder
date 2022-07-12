@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:kicker_finder/pages/playerProfilePage.dart';
 
 import 'package:kicker_finder/pages/battlePage.dart';
+import 'package:kicker_finder/pages/settingsPage.dart';
 import 'package:kicker_finder/pages/tournamentPage.dart';
 import 'package:kicker_finder/pages/kickerMapPage.dart';
+
+import 'package:kicker_finder/auth_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -150,15 +153,17 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.red,
                         child: OutlinedButton(
                           onPressed: () {
+
+                            //AuthService().handleAuthState(); ЕСЛИ ПОМЕНЯТЬ НА ПУШ НА ЭТО, ЮЗЕР СРАЗУ БУДЕТ НАПРАВЛЕН НА ЛОГИН СРАНИЦУ, ЕСЛИ ОН НЕ ЗАЛОГИНЕН, ИЛИ НА ДОМАШНЮЮ СТРАНИЦУ, ЕСЛИ ЗАЛОГИНЕН
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PlayerProfilePage(
                                       title: 'Player Profile Page',
-                                      topPlayers: List.generate(
+                                      /*topPlayers: List.generate(
                                           50,
                                               (index) =>
-                                              TopPlayer('Player $index', 'I am number $index goodbye')),
+                                              TopPlayer('Player $index', 'I am number $index goodbye')),*/
                                     )));
                           },
                           child: const Text(
@@ -180,7 +185,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+          onPressed: () {
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingsPage(title: 'Settings Page')));
+
+        },
         tooltip: 'Setings',
         child: const Icon(Icons.settings),
       ), // This trailing comma makes auto-formatting nicer for build methods.

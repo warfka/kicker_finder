@@ -1,18 +1,18 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kicker_finder/futureBuilderForPlayerProfile.dart';
 import 'dart:convert';
 import 'package:kicker_finder/user.dart';
 
-import '../data.dart';
-import '../dioClient.dart';
+import 'package:kicker_finder/data.dart';
+import 'package:kicker_finder/dioClient.dart';
 
 class PlayerProfilePage extends StatefulWidget {
-  const PlayerProfilePage({Key? key, required this.title, required this.topPlayers})
+  const PlayerProfilePage({Key? key, required this.title})
       : super(key: key);
   final String title;
-  final List<TopPlayer> topPlayers;
+  //final List<TopPlayer> topPlayers;  , required this.topPlayers
 
   @override
   State<PlayerProfilePage> createState() => _PlayerProfilePageState();
@@ -79,18 +79,8 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                 height: 200,
                 color: Colors.white,
                 child: Center(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
-                      hintText: 'What people call you?',
-                      labelText: 'Your nickname',
-                    ),
-                    onSaved: (String? value) {},
-                    validator: (String? value) {
-                      return (value != null && value.contains('ball'))
-                          ? 'This is a very boring nickname.'
-                          : null;
-                    },
+                  child: Text(
+                    'не работает'//FirebaseAuth.instance.currentUser!.displayName!,
                   ),
                 ),
               ),
@@ -106,7 +96,7 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
               ),
             ),
             Text('Лучшие игроки'),
-            Expanded(
+            /*Expanded(
               flex: 3,
               child: FutureBuilder<User?>(
                 future: _client.getUser(id: '2'),
@@ -137,7 +127,7 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                   return CircularProgressIndicator();
                 },
               ),
-            ),
+            ),*/
           ],
         ),
       ),
