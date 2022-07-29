@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-//import 'package:json_serializable/json_serializable.dart';
 
 class BattlePage extends StatefulWidget {
   const BattlePage({Key? key, required this.title}) : super(key: key);
